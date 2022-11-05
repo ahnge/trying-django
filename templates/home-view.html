@@ -3,7 +3,9 @@
 <ul>
   {% for article in article_list %}
   <h1>
-    <a href="/articles/{{article.id}}">{{article.title}}</a>
+    <a href="{% url 'articles:article_detail' article.id %}"
+      >{{article.title}}</a
+    >
   </h1>
   <p>{{article.content}}</p>
   {% endfor %}

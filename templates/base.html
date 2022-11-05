@@ -7,6 +7,12 @@
     <title>Try Django 3.2</title>
   </head>
   <body>
+    <h1>Hello..I am trying django 3.2!</h1>
+
+    <form action="{% url 'articles:search_article' %}" method="get">
+      <input type="text" name="q" id="q" />
+      <input type="submit" value="Submit" />
+    </form>
     {% block content %}{% endblock content %}
   </body>
 </html>
