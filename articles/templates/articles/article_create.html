@@ -2,17 +2,7 @@
 <div style="margin-top: 30px">
   <form action="{% url 'articles:article_create' %}" method="post">
     {% csrf_token %}
-    <div>
-      <input type="text" name="title" placeholder="Title" />
-    </div>
-    <div>
-      <textarea
-        name="content"
-        placeholder="Content"
-        cols="30"
-        rows="10"
-      ></textarea>
-    </div>
+    {{form.as_p}}
     <input type="submit" value="Submit" />
   </form>
 </div>
