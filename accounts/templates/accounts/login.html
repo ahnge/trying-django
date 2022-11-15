@@ -3,16 +3,9 @@
 {% if not request.user.is_authenticated %}
 <form action="{% url 'login_view' %}" method="post">
   {% csrf_token %} 
-  {% if error %}
-  <p style="color: red">{{error}}</p>
-  {% endif %}
-  <div>
-    <input type="text" name="username" placeholder="Username" />
-  </div>
-  <div>
-    <input type="password" name="password" />
-  </div>
+  {{form.as_p}}
   <button type="submit">Login</button>
+  <p>Need an account? Please <a href="{% url 'register_view' %}">Register</a></p>
 </form>
 {% else %}
 <p>You are already logged in. you wanna <a href="{% url 'logout_view' %}">logout?</a></p>
