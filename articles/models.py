@@ -1,7 +1,8 @@
 from django.db import models
-from django.utils.text import slugify
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+
+from .utils import slugify_title
 
 # Create your models here.
 
@@ -9,7 +10,7 @@ from django.dispatch import receiver
 class Article(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    slug = models.SlugField(max_length=50, blank=True, null=True)
+    slug = models.SlugField(max_length=50, blank=True, null=True, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     publish = models.DateField(
@@ -25,12 +26,13 @@ class Article(models.Model):
         return self.title
 
 
-# @receiver(pre_save, sender=Article)
-# def print_something(sender, instance, *args, **kwargs):
+@receiver(pre_save, sender=Article)
+def before_sacing(sender, instance, **kwargs):
+    if instance.slug is None:
+        slugify_title(instance)
 
 
 @receiver(post_save, sender=Article)
 def make_slug(sender, instance, created, *args, **kwargs):
     if created:
-        instance.slug = slugify(instance.title)
-        instance.save()
+        slugify_title(instance, save=True)
