@@ -15,15 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 from .views import home
 from accounts.views import login_view, logout_view, register_view
 
 urlpatterns = [
-    path("", home),
+    path("", home, name="home_view"),
     path("admin/", admin.site.urls),
     path("articles/", include("articles.urls")),
     path("login/", login_view, name="login_view"),
     path("logout/", logout_view, name="logout_view"),
     path("register/", register_view, name="register_view"),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

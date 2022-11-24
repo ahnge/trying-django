@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 from .models import Article
 from .forms import ArticleForm
@@ -7,13 +8,11 @@ from .forms import ArticleForm
 # Create your views here.
 
 
-def article_detail_view(request, id=None):
+def article_detail_view(request, slug=None):
     article = None
-    if id is not None:
-        try:
-            article = Article.objects.get(pk=id)
-        except:
-            article = None
+    if slug is not None:
+        article = get_object_or_404(Article, slug=slug)
+
     context = {"object": article}
     return render(request, "articles/article_detail.html", context)
 
@@ -25,25 +24,24 @@ def article_create_view(request):
     if form.is_valid():
         article_obj = form.save()
         context["object"] = article_obj
-        context["created"] = True
-        context["form"] = ArticleForm()
+        return redirect("articles:article_detail", slug=article_obj.slug)
     return render(request, "articles/article_create.html", context)
 
 
 def article_search_view(request):
     query_dict = request.GET
     q = query_dict["q"]
+    print(q)
 
-    try:
-        article_id = int(q)
-    except:
-        article_id = None
-
-    if article_id is not None:
+    if q is not None:
         try:
-            article_obj = Article.objects.get(id=article_id)
+            article_list = Article.objects.filter(
+                Q(content__icontains=q) | Q(title__icontains=q)
+            )
         except:
-            article_obj = None
+            article_list = None
 
-    context = {"object": article_obj}
+        print(article_list)
+
+    context = {"object_list": article_list}
     return render(request, "articles/search.html", context)

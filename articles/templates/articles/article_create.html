@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block content %} {% if not created %}
+{% extends 'base.html' %}
+
+{% block content %}
 <div style="margin-top: 30px">
   <form action="{% url 'articles:article_create' %}" method="post">
     {% csrf_token %}
@@ -6,11 +8,4 @@
     <input type="submit" value="Submit" />
   </form>
 </div>
-{% else %}
-<h1>Your article was created.</h1>
-<h1>
-  <a href="{% url 'articles:article_detail' object.id %}"> {{object.title}}</a>
-</h1>
-<p>{{object.content}}</p>
-
-{% endif %} {% endblock content %}
+{% endblock content %}
