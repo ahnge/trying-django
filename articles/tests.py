@@ -50,3 +50,7 @@ class ArticleTestCase(TestCase):
         obj = Article.objects.create(title="hello world", content="Hello world content")
         articles = Article.objects.filter(slug__iexact=obj.slug)
         self.assertEqual(1, articles.count())
+
+    def test_article_search_feature(self):
+        qs = Article.objects.search(query="hello world")
+        self.assertEqual(qs.count(), self.num_of_articles)
