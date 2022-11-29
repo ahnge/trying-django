@@ -1,10 +1,25 @@
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
+from django.db.models import Q
 
 from .utils import slugify_title
 
-# Create your models here.
+
+class ArticleQuerySet(models.QuerySet):
+    def search(self, query=None):
+        if query is None or query == "":
+            return self.none()
+        lookup = Q(title__icontains=query) | Q(content__icontains=query)
+        return self.filter(lookup)
+
+
+# class ArticleManager(models.Manager):
+#     def get_queryset(self):
+#         return ArticleQuerySet(self.model, using=self._db)
+
+#     def search(self, query=None):
+#         return self.get_queryset().search(query=query)
 
 
 class Article(models.Model):
@@ -16,6 +31,7 @@ class Article(models.Model):
     publish = models.DateField(
         auto_now_add=False, auto_now=False, null=True, blank=True
     )
+    objects = ArticleQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
         # if self.slug is None:

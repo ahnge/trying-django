@@ -31,17 +31,12 @@ def article_create_view(request):
 def article_search_view(request):
     query_dict = request.GET
     q = query_dict["q"]
-    print(q)
 
     if q is not None:
         try:
-            article_list = Article.objects.filter(
-                Q(content__icontains=q) | Q(title__icontains=q)
-            )
+            article_list = Article.objects.search(query=q)
         except:
             article_list = None
-
-        print(article_list)
 
     context = {"object_list": article_list}
     return render(request, "articles/search.html", context)
